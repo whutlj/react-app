@@ -1,9 +1,45 @@
-import React, { Component } from 'react'
-import logo from './logo.svg'
-import './App.css'
-import { Button } from 'antd'
+import React, { Component } from 'react';
+import { NavLink, Link, Route, BrowserRouter } from 'react-router-dom';
+import logo from './logo.svg';
+import './App.css';
+import { Button } from 'antd';
+import Loadable from 'react-loadable';
+import LoadingComponent from './components/common/LoadingComponent';
+import LinkItem from './components/LinkItem';
+// 代码拆分
+const Dashboard = Loadable({
+  loader: () => import('./components/DashBoard'),
+  loading: LoadingComponent
+});
+const DashboardUser = Loadable({
+  loader: () => import('./components/DashBoardUser'),
+  loading: LoadingComponent
+});
+const NestRoute = Loadable({
+  loader: () => import('./components/NestRoute'),
+  loading: LoadingComponent
+});
+const DefinePureComponent = Loadable({
+  loader: () => import('./components/DefinePureComponent'),
+  loading: LoadingComponent
+});
+const navStyle = {
+  fontWeight: 'bold',
+  fontSize: '20px'
+};
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.linkToRoute = this.linkToRoute.bind(this);
+  }
+  shouldComponentUpdate() {
+    console.log('shouldComponentUpdate');
+    // 初始（第一次）/(forceUpdate)渲染，不会调用该生命周期
+    return true;
+  }
+  linkToRoute() {}
   render() {
+    console.log(this);
     return (
       <div className="App">
         <header className="App-header">
@@ -13,10 +49,36 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <Button type="primary">按钮</Button>
+        <Button type="primary" onClick={this.linkToRoute}>
+          按钮
+        </Button>
+        <Link className="nav-selected" to="/dashboard">
+          跳转
+        </Link>
+        <Link to="/nest/secondNest">跳转</Link>
+        <div>
+          <NavLink to={{ pathname: '/dashboard' }} activeClassName="nav-selected" activeStyle={navStyle}>
+            有样式的的跳转NavLink
+          </NavLink>
+        </div>
+        <Route name="Dashboard" path="/dashboard/user" component={DashboardUser} />
+        <Route name="Dashboard" path="/dashboard" exact component={Dashboard} />
+        <div>
+          <div>这里测试嵌套路由</div>
+          <Route path="/nest" component={NestRoute} />
+          <div>嵌套的div底部</div>
+        </div>
+        <ul>
+          <LinkItem to="/dashboard/user" name="children" age="23" />
+        </ul>
+        <DefinePureComponent>
+          <NavLink to="/dashboard/user">报表</NavLink>
+          <Link to="/nest/secondNest">嵌套</Link>
+          <Route name="Dashboard" path="/dashboard" exact component={Dashboard} />
+        </DefinePureComponent>
       </div>
-    )
+    );
   }
 }
 
-export default App
+export default App;
