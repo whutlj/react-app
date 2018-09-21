@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { NavLink, Link, Route, BrowserRouter } from 'react-router-dom';
+import { NavLink, Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
-import { Button } from 'antd';
 import Loadable from 'react-loadable';
 import LoadingComponent from './components/common/LoadingComponent';
 import LinkItem from './components/LinkItem';
+import PropTypes from 'prop-types';
 // 代码拆分
 const Dashboard = Loadable({
   loader: () => import('./components/DashBoard'),
@@ -23,6 +23,11 @@ const DefinePureComponent = Loadable({
   loader: () => import('./components/DefinePureComponent'),
   loading: LoadingComponent
 });
+const WithComponent = Loadable({
+  loader: () => import('./components/WithComponent'),
+  loading: LoadingComponent
+});
+
 const navStyle = {
   fontWeight: 'bold',
   fontSize: '20px'
@@ -32,14 +37,22 @@ class App extends Component {
     super(props);
     this.linkToRoute = this.linkToRoute.bind(this);
   }
-  shouldComponentUpdate() {
-    console.log('shouldComponentUpdate');
-    // 初始（第一次）/(forceUpdate)渲染，不会调用该生命周期
-    return true;
-  }
-  linkToRoute() {}
-  render() {
+  // shouldComponentUpdate() {
+  //   // console.log('shouldComponentUpdate');
+  //   // 初始（第一次）/(forceUpdate)渲染，不会调用该生命周期
+  //   return true;
+  // }
+  /**
+   * 路由跳转
+   */
+  linkToRoute() {
+    // 不能使用这种方式
+    // this.props.history.push('/app/nest/secondNest');
     console.log(this);
+    // return <Redirect to="/nest/secondNest" />;
+  }
+  render() {
+    console.log(this.props);
     return (
       <div className="App">
         <header className="App-header">
@@ -49,9 +62,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <Button type="primary" onClick={this.linkToRoute}>
-          按钮
-        </Button>
+        <WithComponent btnName={'js路由跳转'} />
         <Link className="nav-selected" to="/dashboard">
           跳转
         </Link>
@@ -81,4 +92,10 @@ class App extends Component {
   }
 }
 
+App.propTypes = {
+  name: PropTypes.string.isRequired
+};
+App.defaultProps = {
+  name: 'WhutLj'
+};
 export default App;
