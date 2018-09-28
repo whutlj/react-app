@@ -18,7 +18,7 @@ class WithComponent extends Component {
     this.props.history.push('/nest/secondNest');
   }
   render() {
-    const { match, location, history, btnName } = this.props;
+    const { location, btnName } = this.props;
     return <div style={{ ...style.outDiv }}>
         这是withcomponent
         <div>
